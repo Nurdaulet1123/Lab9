@@ -2,11 +2,12 @@ package com.example.lab9;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
@@ -42,8 +43,17 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
                 .setTitle("Play Song")
                 .setMessage("Do you want to play \"" + song.getTitle() + "\" by " + song.getArtist() + "?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    // Пока просто покажем сообщение
-                    Toast.makeText(context, "Playing: " + song.getTitle(), Toast.LENGTH_SHORT).show();
+                    // Intent to start MusicService
+                    Intent serviceIntent = new Intent(context, MusicService.class);
+                    serviceIntent.putExtra("songTitle", song.getTitle() + " - " + song.getArtist());
+
+                    // Start service depending on Android version
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        context.startForegroundService(serviceIntent);  // For Android 8.0 and above
+                    } else {
+                        context.startService(serviceIntent);  // For Android below 8.0
+                    }
+
                     dialog.dismiss();
                 })
                 .setNegativeButton("No", (dialog, which) -> {
