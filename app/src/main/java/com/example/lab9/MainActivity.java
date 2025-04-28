@@ -1,8 +1,8 @@
 package com.example.lab9;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,10 +38,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadFavoriteArtist();
+    }
+
+    private void loadFavoriteArtist() {
+        SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        String artist = preferences.getString("favorite_artist", "Unknown Artist");
+        setTitle("Favorite: " + artist); // Установим заголовок активности
+    }
+
     private void loadSongs() {
         songList.add(new Song("Song 1", "Artist A"));
         songList.add(new Song("Song 2", "Artist B"));
         songList.add(new Song("Song 3", "Artist C"));
-        // Можно будет позже читать из файла
     }
 }
