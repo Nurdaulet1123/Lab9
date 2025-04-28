@@ -1,14 +1,14 @@
 package com.example.lab9;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder> {
@@ -34,10 +34,22 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         holder.txtTitle.setText(song.getTitle());
         holder.txtArtist.setText(song.getArtist());
 
-        holder.itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(context, NowPlayingActivity.class);
-            context.startActivity(intent);
-        });
+        holder.itemView.setOnClickListener(view -> showPlayDialog(song));
+    }
+
+    private void showPlayDialog(Song song) {
+        new AlertDialog.Builder(context)
+                .setTitle("Play Song")
+                .setMessage("Do you want to play \"" + song.getTitle() + "\" by " + song.getArtist() + "?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Пока просто покажем сообщение
+                    Toast.makeText(context, "Playing: " + song.getTitle(), Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     @Override
@@ -46,6 +58,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     }
 
     public static class SongViewHolder extends RecyclerView.ViewHolder {
+
         TextView txtTitle, txtArtist;
 
         public SongViewHolder(@NonNull View itemView) {
